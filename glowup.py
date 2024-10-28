@@ -2,9 +2,13 @@
 import pandas as pd
 import streamlit as st
 import plotly.express as px
+import os
+
+# Definir o caminho para o arquivo de dados
+caminho_dados = os.path.join(os.path.dirname(__file__), '1000000-bandcamp-sales.parquet')
 
 # Carregar os dados a partir do arquivo .parquet
-data = pd.read_parquet('C:\\Users\\henri\\Desktop\\Data GlowUp\\1000000-bandcamp-sales.parquet')
+data = pd.read_parquet(caminho_dados)
 
 # Listar todas as colunas presentes no DataFrame
 print(data.columns)
@@ -20,8 +24,8 @@ for coluna in colunas_numericas:
     data[coluna] = data[coluna].round(2)
 
 # Converter o DataFrame para o formato Parquet com compressão
-data.to_parquet('C:\\Users\\henri\\Desktop\\Data GlowUp\\1000000-bandcamp-sales-reduzido.parquet', index=False, compression='gzip')
-
+caminho_dados_reduzido = os.path.join(os.path.dirname(__file__), '1000000-bandcamp-sales-reduzido.parquet')
+data.to_parquet(caminho_dados_reduzido, index=False, compression='gzip')
 
 # Transformar colunas em numéricas
 data['amount_paid_usd'] = pd.to_numeric(data['amount_paid_usd'], errors='coerce')
@@ -41,11 +45,8 @@ artistas = data['artist_name'].nunique()
 st.write("**O conjunto de dados do BandCamp se trata de um pequeno recorte de tempo a respeito desse DataFrame, com um conjunto total de 1KK de linhas, e os registros de compra desse período. Acompanhe abaixo algumas métricas :**")
 
 # Exibir métricas
-
 st.metric(label="Valor Movimentado na plataforma", value=f"${valor_total_arrecadado:,.2f}")
-
 st.metric(label="Ticket Médio", value=f"${ticket_medio:,.2f}")
-
 st.metric(label="Artistas na Plataforma", value=f"{artistas}")
 
 st.subheader("Veja aqui, um breve resumo do conjunto de dados", divider="gray")
@@ -81,7 +82,7 @@ fig_paises = px.bar(
     top_20_paises, 
     x='País', 
     y='Acessos',
-     title='',   
+    title='',   
     labels={'País': 'País', 'Acessos': 'Acessos'},
     text='Acessos'
 )
@@ -116,6 +117,9 @@ fig_bandas.update_layout(
 
 # Exibir gráfico
 st.plotly_chart(fig_bandas)
+
+
+
 
 
 
