@@ -2,26 +2,26 @@
 
 # %%
 import pandas as pd
-import streamlit as st
-import plotly.express as px
 
-st.header('Data GlowUp 37', divider='red')
-st.title('Análise de Dados do conjunto de informação do BandCamp')
+# Carregar os dados a partir do arquivo .parquet
+data = pd.read_parquet('C:\\Users\\henri\\Desktop\\Data GlowUp\\1000000-bandcamp-sales.parquet')
 
-# Carregar os dados
-data = pd.read_csv('C:\\Users\\henri\\Desktop\\Data GlowUp\\1000000-bandcamp-sales.csv')
+# Listar todas as colunas presentes no DataFrame
+print(data.columns)
 
-colunas_para_remover = ['slug_type', 'amount_paid' ,'currency' , 'art_url' , 'url']
-data.drop(columns=colunas_para_remover, inplace=True)
+# Remover colunas desnecessárias (ajustar conforme colunas presentes no DataFrame)
+colunas_para_remover = ['slug_type', 'amount_paid', 'currency', 'art_url', 'url']
+colunas_presentes_para_remover = [col for col in colunas_para_remover if col in data.columns]
+data.drop(columns=colunas_presentes_para_remover, inplace=True)
 
-# Reduzir a precisão dos dados numéricos (substitua 'coluna_numerica' pelas colunas reais)
+# Reduzir a precisão dos dados numéricos
 colunas_numericas = ['amount_paid_usd', 'amount_over_fmt']
 for coluna in colunas_numericas:
     data[coluna] = data[coluna].round(2)
 
+# Converter o DataFrame para o formato Parquet com compressão
+data.to_parquet('C:\\Users\\henri\\Desktop\\Data GlowUp\\1000000-bandcamp-sales-reduzido.parquet', index=False, compression='gzip')
 
-# Converter o DataFrame para o formato Parquet
-data.to_parquet('C:\\Users\\henri\\Desktop\\Data GlowUp\\1000000-bandcamp-sales.parquet', index=False)
 
 # Transformar colunas em numéricas
 data['amount_paid_usd'] = pd.to_numeric(data['amount_paid_usd'], errors='coerce')
