@@ -1,7 +1,7 @@
-
-
 # %%
 import pandas as pd
+import streamlit as st
+import plotly.express as px
 
 # Carregar os dados a partir do arquivo .parquet
 data = pd.read_parquet('C:\\Users\\henri\\Desktop\\Data GlowUp\\1000000-bandcamp-sales.parquet')
